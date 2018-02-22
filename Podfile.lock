@@ -1,0 +1,17 @@
+PODS:
+  - Groot (3.0.1):
+    - Groot/Swift (= 3.0.1)
+  - Groot/Swift (3.0.1)
+  - PlainPing (0.4)
+
+DEPENDENCIES:
+  - Groot
+  - PlainPing
+
+SPEC CHECKSUMS:
+  Groot: a668afbcf0be88d76c0a26c714cfa4638ceaca66
+  PlainPing: 17845ab9e2b41460edc0faa94fd02093fa17d236
+
+PODFILE CHECKSUM: 8f819e3479be456ea51453ede5f874a9c905ce3d
+
+COCOAPODS: 1.4.0

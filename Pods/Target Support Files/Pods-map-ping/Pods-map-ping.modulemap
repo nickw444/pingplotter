@@ -1,0 +1,6 @@
+framework module Pods_map_ping {
+  umbrella header "Pods-map-ping-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,6 @@
+framework module Pods_map_pingUITests {
+  umbrella header "Pods-map-pingUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
