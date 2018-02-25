@@ -14,6 +14,8 @@
 		60125671203EAA6500B60D9A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6012566F203EAA6500B60D9A /* LaunchScreen.storyboard */; };
 		6012567C203EAA6500B60D9A /* map_pingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6012567B203EAA6500B60D9A /* map_pingTests.swift */; };
 		60125687203EAA6500B60D9A /* map_pingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60125686203EAA6500B60D9A /* map_pingUITests.swift */; };
+		605C18AF204817A2004CAED3 /* HardwareInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605C18AE204817A2004CAED3 /* HardwareInfoProvider.swift */; };
+		605C18B120482AD8004CAED3 /* UIColor+Interpolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605C18B020482AD8004CAED3 /* UIColor+Interpolation.swift */; };
 		6065537E2042175D0060259D /* ResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6065537D2042175D0060259D /* ResultsViewController.swift */; };
 		6065538120421D650060259D /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6065537F20421D650060259D /* Model.xcdatamodeld */; };
 		6065538E204220C20060259D /* Session+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6065538A204220C20060259D /* Session+CoreDataClass.swift */; };
@@ -21,6 +23,7 @@
 		60655390204220C20060259D /* Request+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6065538C204220C20060259D /* Request+CoreDataClass.swift */; };
 		60655391204220C20060259D /* Request+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6065538D204220C20060259D /* Request+CoreDataProperties.swift */; };
 		60655393204275BB0060259D /* DeviceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60655392204275BB0060259D /* DeviceModel.swift */; };
+		60A73D762042DAD900101A87 /* SessionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A73D752042DAD900101A87 /* SessionViewController.swift */; };
 		85EE9B8CA3739AC067FEDAE7 /* Pods_map_pingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B09BA911DF0DB13E1D84AB28 /* Pods_map_pingTests.framework */; };
 		A4C85B77D3044D14DCE4BF14 /* Pods_map_pingUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 764195BC740BB64900B3FD05 /* Pods_map_pingUITests.framework */; };
 		FBEAA2D3AADFAF0ABD65474F /* Pods_map_ping.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABF3FFA4E79E1A0B8DC7599B /* Pods_map_ping.framework */; };
@@ -62,6 +65,8 @@
 		60125686203EAA6500B60D9A /* map_pingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = map_pingUITests.swift; sourceTree = "<group>"; };
 		60125688203EAA6500B60D9A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		60125696203F69AC00B60D9A /* PlainPing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PlainPing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		605C18AE204817A2004CAED3 /* HardwareInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareInfoProvider.swift; sourceTree = "<group>"; };
+		605C18B020482AD8004CAED3 /* UIColor+Interpolation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Interpolation.swift"; sourceTree = "<group>"; };
 		6065537D2042175D0060259D /* ResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsViewController.swift; sourceTree = "<group>"; };
 		6065538020421D650060259D /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		6065538A204220C20060259D /* Session+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Session+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -69,6 +74,7 @@
 		6065538C204220C20060259D /* Request+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Request+CoreDataClass.swift"; sourceTree = "<group>"; };
 		6065538D204220C20060259D /* Request+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Request+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		60655392204275BB0060259D /* DeviceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModel.swift; sourceTree = "<group>"; };
+		60A73D752042DAD900101A87 /* SessionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionViewController.swift; sourceTree = "<group>"; };
 		764195BC740BB64900B3FD05 /* Pods_map_pingUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_map_pingUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABF3FFA4E79E1A0B8DC7599B /* Pods_map_ping.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_map_ping.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B09BA911DF0DB13E1D84AB28 /* Pods_map_pingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_map_pingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,6 +172,9 @@
 				60125672203EAA6500B60D9A /* Info.plist */,
 				6065537D2042175D0060259D /* ResultsViewController.swift */,
 				6065537F20421D650060259D /* Model.xcdatamodeld */,
+				60A73D752042DAD900101A87 /* SessionViewController.swift */,
+				605C18AE204817A2004CAED3 /* HardwareInfoProvider.swift */,
+				605C18B020482AD8004CAED3 /* UIColor+Interpolation.swift */,
 			);
 			path = "map-ping";
 			sourceTree = "<group>";
@@ -491,11 +500,14 @@
 				60125669203EAA6500B60D9A /* ViewController.swift in Sources */,
 				60655391204220C20060259D /* Request+CoreDataProperties.swift in Sources */,
 				6065538E204220C20060259D /* Session+CoreDataClass.swift in Sources */,
+				60A73D762042DAD900101A87 /* SessionViewController.swift in Sources */,
 				60655390204220C20060259D /* Request+CoreDataClass.swift in Sources */,
 				6065538120421D650060259D /* Model.xcdatamodeld in Sources */,
 				60655393204275BB0060259D /* DeviceModel.swift in Sources */,
 				60125667203EAA6500B60D9A /* AppDelegate.swift in Sources */,
 				6065537E2042175D0060259D /* ResultsViewController.swift in Sources */,
+				605C18B120482AD8004CAED3 /* UIColor+Interpolation.swift in Sources */,
+				605C18AF204817A2004CAED3 /* HardwareInfoProvider.swift in Sources */,
 				6065538F204220C20060259D /* Session+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -667,6 +679,7 @@
 				DEVELOPMENT_TEAM = FXWP763K8Z;
 				INFOPLIST_FILE = "map-ping/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				"OTHER_SWIFT_FLAGS[sdk=iphonesimulator*]" = "$(inherited) \"-D\" \"IOS_SIMULATOR\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nickwhyte.map-ping";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
