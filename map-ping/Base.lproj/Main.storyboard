@@ -7,6 +7,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -338,6 +339,38 @@
             </objects>
             <point key="canvasLocation" x="1455" y="1344"/>
         </scene>
+        <!--Session View Controller-->
+        <scene sceneID="Pt2-NK-lLz">
+            <objects>
+                <viewController id="qgj-mn-GHn" customClass="SessionViewController" customModule="map_ping" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3e5-eo-k9D">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="M3r-lT-XKC">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <connections>
+                                    <outlet property="delegate" destination="qgj-mn-GHn" id="uHY-BN-17o"/>
+                                </connections>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="M3r-lT-XKC" firstAttribute="leading" secondItem="spT-26-pmV" secondAttribute="leading" id="QP1-5G-7cl"/>
+                            <constraint firstItem="spT-26-pmV" firstAttribute="trailing" secondItem="M3r-lT-XKC" secondAttribute="trailing" id="Uwr-2o-UHh"/>
+                            <constraint firstItem="M3r-lT-XKC" firstAttribute="top" secondItem="spT-26-pmV" secondAttribute="top" id="WaQ-1L-uew"/>
+                            <constraint firstItem="spT-26-pmV" firstAttribute="bottom" secondItem="M3r-lT-XKC" secondAttribute="bottom" id="wQU-Zk-0Fx"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="spT-26-pmV"/>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="M3r-lT-XKC" id="faW-TB-oYq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AOk-Jv-9tT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1466.4000000000001" y="2018.1409295352325"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="vzM-ME-rUR">
             <objects>
@@ -401,6 +434,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <segue destination="qgj-mn-GHn" kind="show" identifier="showResultsDetail" id="Egp-gf-h20"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hpE-Bm-a3F" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
