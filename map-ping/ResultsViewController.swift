@@ -114,25 +114,17 @@ class ResultsViewController: UITableViewController, NSFetchedResultsControllerDe
         }
     }
     
-//    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let obj = fetchedResultsController.object(at: indexPath)
-//        tableView.deselectRow(at: indexPath, animated: true)
-//
-//        let jsonData = try! JSONSerialization.data(withJSONObject: obj.serialize(), options: .prettyPrinted)
-//        let reqJSONStr = String(data: jsonData, encoding: .utf8)
-//        let itemsToShare = [reqJSONStr!]
-//        let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
-//        activityViewController.popoverPresentationController?.sourceView = self.view
-//        self.present(activityViewController, animated: true, completion: nil)
-//    }
-//
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        // Create a new variable to store the instance of PlayerTableViewController
-//        let destinationVC = segue.destination as! SessionViewController
-//        destinationVC.session =
-//
-//    }
+    // TODO (NW) Reintroduce data export.
+    func exportData(obj: Session) {
+        let jsonData = try! JSONSerialization.data(withJSONObject: obj.serialize(), options: .prettyPrinted)
+        let reqJSONStr = String(data: jsonData, encoding: .utf8)
+        let itemsToShare = [reqJSONStr!]
+        let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view
+        self.present(activityViewController, animated: true, completion: nil)
+    }
     
+
     private var selectedSession: Session?
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
