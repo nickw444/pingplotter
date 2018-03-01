@@ -10,6 +10,11 @@ import Foundation
 import UIKit
 import MapKit
 
+class ColoredCircle: MKCircle {
+    var color = UIColor.black
+}
+
+
 class SessionViewController: UIViewController {
     public var session: Session! = nil
     @IBOutlet weak var mapView: MKMapView!
@@ -20,7 +25,21 @@ class SessionViewController: UIViewController {
     
     func loadMap() {
         mapView.setRegion(mapRegion(), animated: true)
-        mapView.addOverlays(polyLine())
+        mapView.addOverlays(points())
+    }
+    func points() -> [ColoredCircle] {
+        var points: [ColoredCircle] = []
+        
+        let sort = NSSortDescriptor(key: "sendTime", ascending: true)
+        let requests = self.session.requests!.sortedArray(using: [sort]) as! [Request]
+        for first in requests {
+            let start = CLLocation(latitude: first.sendLat, longitude: first.sendLong)
+            let circle = ColoredCircle(center: start.coordinate, radius: 10)
+            circle.color = segmentColor(latency: first.latency)
+            points.append(circle)
+        }
+        
+        return points
     }
     
     func polyLine() -> [MulticolorPolyline] {
@@ -115,13 +134,22 @@ class SessionViewController: UIViewController {
 
 extension SessionViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        guard let polyline = overlay as? MulticolorPolyline else {
-            return MKOverlayRenderer(overlay: overlay)
+        if let polyline = overlay as? MulticolorPolyline {
+            let renderer = MKPolylineRenderer(polyline: polyline)
+            renderer.strokeColor = polyline.color
+            renderer.lineWidth = 3
+            return renderer
         }
-        let renderer = MKPolylineRenderer(polyline: polyline)
-        renderer.strokeColor = polyline.color
-        renderer.lineWidth = 3
-        return renderer
+        
+        if let circle = overlay as? ColoredCircle {
+            let renderer = MKCircleRenderer(circle: circle)
+            let c = circle.color
+            renderer.fillColor = c.withAlphaComponent(0.2)
+            renderer.strokeColor = c
+            renderer.lineWidth = 2
+            return renderer
+        }
+        return MKOverlayRenderer(overlay: overlay)
     }
 //
 //    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
