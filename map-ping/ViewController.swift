@@ -13,10 +13,10 @@ import CoreTelephony
 
 class ViewController: UITableViewController, CLLocationManagerDelegate {
     
+    var infoProvider: InfoProvider! = nil
+    
     var seqId: Int = 0
     var startTime: Date? = nil
-    var totalSent: Int = 0
-    var totalErr: Int = 0
     var lastLatency: Double = 0
     var activeSession: Session? = nil
     
@@ -35,6 +35,7 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
     @IBOutlet weak var latencyLabel: UILabel!
     @IBOutlet weak var technologyLabel: UILabel!
     @IBOutlet weak var providerLabel: UILabel!
+    @IBOutlet weak var totalSuccessLabel: UILabel!
     
     override func viewWillAppear(_ animated: Bool) {
         self.hostField.text = "8.8.8.8";
@@ -45,6 +46,7 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         ctx = appDelegate.persistentContainer.viewContext
+        infoProvider = InfoProviderFactory.create()
         
         //Looks for single or multiple taps.
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.dismissKeyboard))
@@ -55,6 +57,7 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
         self.location.delegate = self
         self.location.allowsBackgroundLocationUpdates = true
         self.location.showsBackgroundLocationIndicator = true
+        self.location.distanceFilter = 50 // meters
         
         // For use in foreground
         self.location.requestAlwaysAuthorization()
@@ -79,7 +82,7 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
             print("Creating new session!")
             activeSession = Session(context: ctx)
             activeSession!.date = Date() as NSDate
-            activeSession!.network = getNetworkProvider()
+            activeSession!.network = infoProvider.getNetworkProvider()
             activeSession!.device = UIDevice.current.modelName
         }
         updateUI()
@@ -99,12 +102,13 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
         totalSentLabel.text = "\(totalSent)"
         totalErrorLabel.text = "\(totalErr)"
         totalPendingLabel.text = "\(totalPending)"
+        totalSuccessLabel.text = "\(totalSuccess)"
         let roundedLatency = Double(round(lastLatency * 1000)) / 1000
         latencyLabel.text = "\(roundedLatency)"
         
-        providerLabel.text = getNetworkProvider()
-        technologyLabel.text = getRadioAccessTechnology()
-        signalStrengthLabel.text = "\(getSignalStrength())"
+        providerLabel.text = infoProvider.getNetworkProvider()
+        technologyLabel.text = infoProvider.getRadioAccessTechnology()
+        signalStrengthLabel.text = "\(infoProvider.getSignalStrength())"
         
         if (running) {
             startStopLabel.text = "Pause"
@@ -117,8 +121,28 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
     
     var totalPending:Int {
         get {
-            // TODO NW Query coredata.
-            return 0
+            let pred = NSPredicate(format: "recvTime==nil")
+            return (activeSession?.requests?.filtered(using: pred).count) ?? 0
+        }
+    }
+    
+    var totalErr:Int {
+        get {
+            let pred = NSPredicate(format: "timeout==true")
+            return (activeSession?.requests?.filtered(using: pred).count) ?? 0
+        }
+    }
+    
+    var totalSent:Int {
+        get {
+            return activeSession?.requests?.count ?? 0
+        }
+    }
+    
+    var totalSuccess:Int {
+        get {
+            let pred = NSPredicate(format: "latency>0")
+            return (activeSession?.requests?.filtered(using: pred).count) ?? 0
         }
     }
     
@@ -140,7 +164,7 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
             case 0:
                 self.hostField.becomeFirstResponder()
                 break
-            case 5:
+            case 6:
                 print("start stop")
                 self.dismissKeyboard()
                 self.startStopPressed()
@@ -167,30 +191,18 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
         req.sendLat = coordinate.latitude
         req.sendLong = coordinate.longitude
         req.session = session
-        req.sendTechnology = getRadioAccessTechnology()
-        req.sendSignal = Int16(getSignalStrength())
-        
-        let strength = getSignalStrength()
-        print("Signal strength: \(strength)")
+        req.sendTechnology = infoProvider.getRadioAccessTechnology()
+        req.sendSignal = Int16(infoProvider.getSignalStrength())
         
         ctx.insert(req)
         try! ctx.save()
         
-        PlainPing.ping(self.hostField.text!, withTimeout: 10.0, completionBlock: self.onPingCompletion(req: req))
-        seqId += 1
-        totalSent += 1
+        PlainPing.ping(self.hostField.text!, withTimeout: 5.0, completionBlock: self.onPingCompletion(req: req))
         
+        seqId += 1
+        self.updateUI()
     }
-    
-    func getRadioAccessTechnology() -> String? {
-        let networkInfo = CTTelephonyNetworkInfo()
-        return networkInfo.currentRadioAccessTechnology?.replacingOccurrences(of: "CTRadioAccessTechnology", with: "")
-    }
-    
-    func getNetworkProvider() -> String? {
-        let networkInfo = CTTelephonyNetworkInfo()
-        return networkInfo.subscriberCellularProvider?.carrierName
-    }
+
     
     private func onPingCompletion(req: Request) -> (Double?, Error?) -> Void{
         return { [weak self](timeElapsed: Double?, error: Error?) -> Void in
@@ -200,8 +212,8 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
             req.recvLat = coordinate?.latitude ?? 0
             req.recvLong = coordinate?.longitude ?? 0
             req.recvTime = Date() as NSDate
-            req.recvTechnology = self.getRadioAccessTechnology()
-            req.recvSignal = Int16(self.getSignalStrength())
+            req.recvTechnology = self.infoProvider.getRadioAccessTechnology()
+            req.recvSignal = Int16(self.infoProvider.getSignalStrength())
     
             
             if let latency = timeElapsed {
@@ -211,8 +223,8 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
             }
             
             if error != nil {
+                print("error: \(error!.localizedDescription)")
                 req.timeout = true
-                self.totalErr += 1
             }
             
             print("Recv Ping with Seq \(req.seqId). Latency: \(req.latency) Tech: \(req.recvTechnology ?? "")")
@@ -221,29 +233,4 @@ class ViewController: UITableViewController, CLLocationManagerDelegate {
         }
     }
     
-    func getSignalStrength() -> Int {
-        let application = UIApplication.shared
-        let statusBarView = application.value(forKey: "statusBar") as! UIView
-        let foregroundView = statusBarView.value(forKey: "foregroundView") as! UIView
-        let foregroundViewSubviews = foregroundView.subviews
-        
-        var dataNetworkItemView:UIView!
-        
-        for subview in foregroundViewSubviews {
-            if subview.isKind(of: NSClassFromString("UIStatusBarSignalStrengthItemView")!) {
-                dataNetworkItemView = subview
-                break
-            } else {
-                return 0 //NO SERVICE
-            }
-        }
-        
-        return dataNetworkItemView.value(forKey: "signalStrengthBars") as! Int
-    }
 }
-
-
-
-
-
-

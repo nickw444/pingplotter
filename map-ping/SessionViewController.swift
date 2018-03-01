@@ -14,7 +14,6 @@ class ColoredCircle: MKCircle {
     var color = UIColor.black
 }
 
-
 class SessionViewController: UIViewController {
     public var session: Session! = nil
     @IBOutlet weak var mapView: MKMapView!
@@ -34,31 +33,12 @@ class SessionViewController: UIViewController {
         let requests = self.session.requests!.sortedArray(using: [sort]) as! [Request]
         for first in requests {
             let start = CLLocation(latitude: first.sendLat, longitude: first.sendLong)
-            let circle = ColoredCircle(center: start.coordinate, radius: 10)
-            circle.color = segmentColor(latency: first.latency)
+            let circle = ColoredCircle(center: start.coordinate, radius: 15)
+            circle.color = segmentColor(req: first)
             points.append(circle)
         }
         
         return points
-    }
-    
-    func polyLine() -> [MulticolorPolyline] {
-        var segments: [MulticolorPolyline] = []
-        
-        let sort = NSSortDescriptor(key: "sendTime", ascending: true)
-        let requests = self.session.requests!.sortedArray(using: [sort]) as! [Request]
-//        let requests = self.session.requests!.allObjects as! [Request]
-        for (first, second) in zip(requests, requests.dropFirst()) {
-            let start = CLLocation(latitude: first.sendLat, longitude: first.sendLong)
-            let end = CLLocation(latitude: second.sendLat, longitude: second.sendLong)
-            
-            let coords = [start.coordinate, end.coordinate]
-            let segment = MulticolorPolyline(coordinates: coords, count: 2)
-            segment.color = segmentColor(latency: first.latency)
-            segments.append(segment)
-        }
-        
-        return segments
     }
     
     func mapRegion() -> MKCoordinateRegion {
@@ -84,90 +64,50 @@ class SessionViewController: UIViewController {
         return MKCoordinateRegion(center: center, span: span)
     }
     
-    private func segmentColor(latency: Double) -> UIColor {
-//        enum BaseColors {
-//            static let r_red: CGFloat = 1
-//            static let r_green: CGFloat = 20 / 255
-//            static let r_blue: CGFloat = 44 / 255
-//
-//            static let y_red: CGFloat = 1
-//            static let y_green: CGFloat = 215 / 255
-//            static let y_blue: CGFloat = 0
-//
-//            static let g_red: CGFloat = 0
-//            static let g_green: CGFloat = 146 / 255
-//            static let g_blue: CGFloat = 78 / 255
-//        }
+    private func segmentColor(req: Request) -> UIColor {
+        
+        if (req.recvTime == nil || req.timeout) {
+            return UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+        }
+        
+        let red = UIColor(red: 1, green: 20/255, blue: 44/255, alpha: 1)
+        let yellow = UIColor(red: 1, green: 215/255, blue: 0, alpha: 1)
+        let green = UIColor(red: 0, green: 146/255, blue: 78/255, alpha: 1)
         
         // < 50, green ish
         // < 300, ok
-        // < 1, not good
-        // > 1, bad
-        // > 5, terrible.
-        
-        
-        
-//
-        let red, green, blue: CGFloat
-        
-//
-//        if latency > midSpeed {
-//            let ratio = CGFloat((speed - slowestSpeed) / (midSpeed - slowestSpeed))
-//            red = BaseColors.r_red + ratio * (BaseColors.y_red - BaseColors.r_red)
-//            green = BaseColors.r_green + ratio * (BaseColors.y_green - BaseColors.r_green)
-//            blue = BaseColors.r_blue + ratio * (BaseColors.y_blue - BaseColors.r_blue)
-//        } else {
-//            let ratio = CGFloat((speed - midSpeed) / (fastestSpeed - midSpeed))
-//            red = BaseColors.y_red + ratio * (BaseColors.g_red - BaseColors.y_red)
-//            green = BaseColors.y_green + ratio * (BaseColors.g_green - BaseColors.y_green)
-//            blue = BaseColors.y_blue + ratio * (BaseColors.g_blue - BaseColors.y_blue)
-//        }
-//
-        return UIColor(red: 255, green: 0, blue: 0, alpha: 1)
+        // < 1000, not good
+        // > 1000, bad
+        // > 5000, terrible.
+
+        let latency = req.latency
+        if latency < 50 {
+            return green
+        } else if latency < 300 {
+            let progress = CGFloat(latency - 50) / (300 - 50)
+            return UIColor.interpolate(from: green, to: yellow, with: progress)
+        } else if latency < 1000 {
+            let progress = CGFloat(latency - 300) / (1000 - 300)
+            print(progress)
+            return UIColor.interpolate(from: yellow, to: red, with: progress)
+        } else {
+            return red
+        }
     }
 }
-
-
-
 
 // MARK: - Map View Delegate
 
 extension SessionViewController: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-        if let polyline = overlay as? MulticolorPolyline {
-            let renderer = MKPolylineRenderer(polyline: polyline)
-            renderer.strokeColor = polyline.color
-            renderer.lineWidth = 3
-            return renderer
-        }
-        
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {        
         if let circle = overlay as? ColoredCircle {
             let renderer = MKCircleRenderer(circle: circle)
             let c = circle.color
             renderer.fillColor = c.withAlphaComponent(0.2)
             renderer.strokeColor = c
-            renderer.lineWidth = 2
+            renderer.lineWidth = 1
             return renderer
         }
         return MKOverlayRenderer(overlay: overlay)
     }
-//
-//    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-//        guard let annotation = annotation as? BadgeAnnotation else { return nil }
-//        let reuseID = "checkpoint"
-//        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID)
-//        if annotationView == nil {
-//            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
-//            annotationView?.image = #imageLiteral(resourceName: "mapPin")
-//            annotationView?.canShowCallout = true
-//        }
-//        annotationView?.annotation = annotation
-//
-//        let badgeImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-//        badgeImageView.image = UIImage(named: annotation.imageName)
-//        badgeImageView.contentMode = .scaleAspectFit
-//        annotationView?.leftCalloutAccessoryView = badgeImageView
-//
-//        return annotationView
-//    }
 }
