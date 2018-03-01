@@ -88,7 +88,6 @@ class SessionViewController: UIViewController {
             return UIColor.interpolate(from: green, to: yellow, with: progress)
         } else if latency < 1000 {
             let progress = CGFloat(latency - 300) / (1000 - 300)
-            print(progress)
             return UIColor.interpolate(from: yellow, to: red, with: progress)
         } else {
             return red
